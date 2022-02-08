@@ -10,6 +10,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  AWSTimestamp: any;
 };
 
 export type Query = {
@@ -20,6 +21,7 @@ export type Query = {
 export type Todo = {
   __typename?: 'Todo';
   completed: Scalars['Boolean'];
+  createdAt: Scalars['AWSTimestamp'];
   id: Scalars['ID'];
   title: Scalars['String'];
   userId: Scalars['String'];

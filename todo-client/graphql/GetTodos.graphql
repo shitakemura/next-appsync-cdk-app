@@ -4,5 +4,6 @@ query GetTodos {
     userId
     title
     completed
+    createdAt
   }
 }

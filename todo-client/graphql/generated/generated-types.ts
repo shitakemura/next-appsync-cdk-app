@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  AWSTimestamp: any;
 };
 
 export type Query = {
@@ -23,6 +24,7 @@ export type Query = {
 export type Todo = {
   __typename?: 'Todo';
   completed: Scalars['Boolean'];
+  createdAt: Scalars['AWSTimestamp'];
   id: Scalars['ID'];
   title: Scalars['String'];
   userId: Scalars['String'];
@@ -31,7 +33,7 @@ export type Todo = {
 export type GetTodosQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetTodosQuery = { __typename?: 'Query', getTodos: Array<{ __typename?: 'Todo', id: string, userId: string, title: string, completed: boolean }> };
+export type GetTodosQuery = { __typename?: 'Query', getTodos: Array<{ __typename?: 'Todo', id: string, userId: string, title: string, completed: boolean, createdAt: any }> };
 
 
 export const GetTodosDocument = gql`
@@ -41,6 +43,7 @@ export const GetTodosDocument = gql`
     userId
     title
     completed
+    createdAt
   }
 }
     `;
