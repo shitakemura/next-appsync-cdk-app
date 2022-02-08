@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { Stack, Text } from "@chakra-ui/react";
 
 const Home: NextPage = () => {
   return (
@@ -10,9 +11,9 @@ const Home: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <main>
-        <h1>Todo App - client</h1>
-      </main>
+      <Stack>
+        <Text color='blue.500'>Todo App - client</Text>
+      </Stack>
     </div>
   );
 };
