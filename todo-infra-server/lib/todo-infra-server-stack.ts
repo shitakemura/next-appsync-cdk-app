@@ -3,7 +3,9 @@ import * as lambdaNodeJs from "aws-cdk-lib/aws-lambda-nodejs";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as appsync from "@aws-cdk/aws-appsync-alpha";
 import { Construct } from "constructs";
+import * as dotenv from "dotenv";
 
+dotenv.config();
 export class TodoInfraServerStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -28,9 +30,9 @@ export class TodoInfraServerStack extends cdk.Stack {
       schema: appsync.Schema.fromAsset("graphql/schema.graphql"),
       authorizationConfig: {
         defaultAuthorization: {
-          authorizationType: appsync.AuthorizationType.API_KEY,
-          apiKeyConfig: {
-            expires: cdk.Expiration.after(cdk.Duration.days(365)),
+          authorizationType: appsync.AuthorizationType.OIDC,
+          openIdConnectConfig: {
+            oidcProvider: process.env.AUTH0_DOMAIN_URL || "",
           },
         },
       },
