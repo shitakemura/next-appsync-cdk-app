@@ -1,7 +1,8 @@
 import { HStack, Text } from "@chakra-ui/react";
+import { Todo } from "../../graphql/generated/generated-types";
 
 type TodoItemProps = {
-  todo: { id: string; title: string };
+  todo: Todo;
 };
 
 export const TodoItem = ({ todo }: TodoItemProps) => {

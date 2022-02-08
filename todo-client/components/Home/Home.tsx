@@ -1,10 +1,20 @@
 import { VStack } from "@chakra-ui/react";
 import { Header } from "../Header";
 import { TodoScreen } from "../Todo";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+} from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: process.env.NEXT_PUBLIC_APPSYNC_API_URL,
+  link: new HttpLink({
+    uri: process.env.NEXT_PUBLIC_APPSYNC_API_URL,
+    headers: {
+      "X-Api-Key": process.env.NEXT_PUBLIC_APPSYNC_API_KEY,
+    },
+  }),
   cache: new InMemoryCache(),
 });
 
