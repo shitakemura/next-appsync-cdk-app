@@ -1,4 +1,4 @@
-# Todo App - frontend
+# Todo App - client
 
 ## Getting Started
 
