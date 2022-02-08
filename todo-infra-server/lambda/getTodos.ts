@@ -15,7 +15,13 @@ export const handler: AppSyncResolverHandler<
     }
 
     const data = await docClient
-      .scan({ TableName: process.env.TODO_TABLE })
+      .query({
+        TableName: process.env.TODO_TABLE,
+        KeyConditionExpression: "userId = :u",
+        ExpressionAttributeValues: {
+          ":u": "user001",
+        },
+      })
       .promise();
     return data.Items as Todo[];
   } catch (err) {
