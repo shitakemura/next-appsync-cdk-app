@@ -11,7 +11,12 @@ export class TodoInfraServerStack extends cdk.Stack {
     // DynamoDB
     const todoTable = new dynamodb.Table(this, "TodoTable", {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
       partitionKey: {
+        name: "userId",
+        type: dynamodb.AttributeType.STRING,
+      },
+      sortKey: {
         name: "id",
         type: dynamodb.AttributeType.STRING,
       },
