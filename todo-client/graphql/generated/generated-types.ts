@@ -16,6 +16,20 @@ export type Scalars = {
   AWSTimestamp: any;
 };
 
+export type AddTodoInput = {
+  title: Scalars['String'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  addTodo?: Maybe<Todo>;
+};
+
+
+export type MutationAddTodoArgs = {
+  addTodoInput: AddTodoInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   getTodos: Array<Todo>;
@@ -30,12 +44,56 @@ export type Todo = {
   userId: Scalars['String'];
 };
 
+export type AddTodoMutationVariables = Exact<{
+  addTodoInput: AddTodoInput;
+}>;
+
+
+export type AddTodoMutation = { __typename?: 'Mutation', addTodo?: { __typename?: 'Todo', userId: string, id: string, title: string, completed: boolean, createdAt: any } | null };
+
 export type GetTodosQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetTodosQuery = { __typename?: 'Query', getTodos: Array<{ __typename?: 'Todo', id: string, userId: string, title: string, completed: boolean, createdAt: any }> };
 
 
+export const AddTodoDocument = gql`
+    mutation AddTodo($addTodoInput: AddTodoInput!) {
+  addTodo(addTodoInput: $addTodoInput) {
+    userId
+    id
+    title
+    completed
+    createdAt
+  }
+}
+    `;
+export type AddTodoMutationFn = Apollo.MutationFunction<AddTodoMutation, AddTodoMutationVariables>;
+
+/**
+ * __useAddTodoMutation__
+ *
+ * To run a mutation, you first call `useAddTodoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddTodoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addTodoMutation, { data, loading, error }] = useAddTodoMutation({
+ *   variables: {
+ *      addTodoInput: // value for 'addTodoInput'
+ *   },
+ * });
+ */
+export function useAddTodoMutation(baseOptions?: Apollo.MutationHookOptions<AddTodoMutation, AddTodoMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddTodoMutation, AddTodoMutationVariables>(AddTodoDocument, options);
+      }
+export type AddTodoMutationHookResult = ReturnType<typeof useAddTodoMutation>;
+export type AddTodoMutationResult = Apollo.MutationResult<AddTodoMutation>;
+export type AddTodoMutationOptions = Apollo.BaseMutationOptions<AddTodoMutation, AddTodoMutationVariables>;
 export const GetTodosDocument = gql`
     query GetTodos {
   getTodos {
@@ -77,5 +135,8 @@ export type GetTodosQueryResult = Apollo.QueryResult<GetTodosQuery, GetTodosQuer
 export const namedOperations = {
   Query: {
     GetTodos: 'GetTodos'
+  },
+  Mutation: {
+    AddTodo: 'AddTodo'
   }
 }
