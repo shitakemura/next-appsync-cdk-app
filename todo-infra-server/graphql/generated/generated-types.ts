@@ -13,6 +13,20 @@ export type Scalars = {
   AWSTimestamp: any;
 };
 
+export type AddTodoInput = {
+  title: Scalars['String'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  addTodo?: Maybe<Todo>;
+};
+
+
+export type MutationAddTodoArgs = {
+  addTodoInput: AddTodoInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   getTodos: Array<Todo>;

@@ -8,6 +8,14 @@ type Todo {
   createdAt: AWSTimestamp!
 }
 
+input AddTodoInput {
+  title: String!
+}
+
 type Query {
   getTodos: [Todo!]!
+}
+
+type Mutation {
+  addTodo(addTodoInput: AddTodoInput!): Todo
 }

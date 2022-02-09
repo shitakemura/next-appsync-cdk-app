@@ -1,14 +1,22 @@
 import { AppSyncResolverHandler } from "aws-lambda";
+import {
+  AddTodoInput,
+  MutationAddTodoArgs,
+  Todo,
+} from "../graphql/generated/generated-types";
 import { DynamoDB } from "aws-sdk";
-import { Todo } from "../graphql/generated/generated-types";
 import { extractJwtSubject } from "./utils/extractJwtSubject";
+import { v4 } from "uuid";
 
 const docClient = new DynamoDB.DocumentClient();
 
-export const handler: AppSyncResolverHandler<null, Todo[] | null> = async (
-  event
-) => {
+export const handler: AppSyncResolverHandler<
+  MutationAddTodoArgs,
+  AddTodoInput | null
+> = async (event) => {
   const sub = extractJwtSubject(event.request.headers);
+  const addTodoInput = event.arguments.addTodoInput;
+  const uuid = v4();
 
   try {
     if (!process.env.TODO_TABLE) {
@@ -16,16 +24,21 @@ export const handler: AppSyncResolverHandler<null, Todo[] | null> = async (
       return null;
     }
 
-    const data = await docClient
-      .query({
+    const newTodo: Todo = {
+      userId: sub,
+      id: uuid,
+      ...addTodoInput,
+      completed: false,
+      createdAt: Date.now(),
+    };
+
+    await docClient
+      .put({
         TableName: process.env.TODO_TABLE,
-        KeyConditionExpression: "userId = :u",
-        ExpressionAttributeValues: {
-          ":u": sub,
-        },
+        Item: newTodo,
       })
       .promise();
-    return data.Items as Todo[];
+    return newTodo;
   } catch (err) {
     console.error(`[Error] DynamoDB error: ${err}`);
     return null;

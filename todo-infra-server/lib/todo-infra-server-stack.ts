@@ -10,7 +10,7 @@ export class TodoInfraServerStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // DynamoDB
+    // == DynamoDB ==
     const todoTable = new dynamodb.Table(this, "TodoTable", {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -24,7 +24,7 @@ export class TodoInfraServerStack extends cdk.Stack {
       },
     });
 
-    // AppSync
+    // == AppSync ==
     const todoApi = new appsync.GraphqlApi(this, "TodoGraphqlApi", {
       name: "todo-graphql-api",
       schema: appsync.Schema.fromAsset("graphql/schema.graphql"),
@@ -38,22 +38,46 @@ export class TodoInfraServerStack extends cdk.Stack {
       },
     });
 
-    // Lambda function
+    // == Lambda function ==
+
+    // common lambda props
+    const commonLambdaNodeJsProps: Omit<
+      lambdaNodeJs.NodejsFunctionProps,
+      "entry"
+    > = {
+      handler: "handler",
+      environment: {
+        TODO_TABLE: todoTable.tableName,
+      },
+    };
+
+    // GetTodos
     const getTodosLambda = new lambdaNodeJs.NodejsFunction(
       this,
-      "getBooksHandler",
+      "getTodosHandler",
       {
         entry: "lambda/getTodos.ts",
-        handler: "handler",
-        environment: {
-          TODO_TABLE: todoTable.tableName,
-        },
+        ...commonLambdaNodeJsProps,
       }
     );
 
     todoTable.grantReadData(getTodosLambda);
 
-    // AppSync DataSource
+    // AddTodo
+    const addTodoLambda = new lambdaNodeJs.NodejsFunction(
+      this,
+      "addTodoHandler",
+      {
+        entry: "lambda/addTodo.ts",
+        ...commonLambdaNodeJsProps,
+      }
+    );
+
+    todoTable.grantReadWriteData(addTodoLambda);
+
+    // == AppSync DataSource ==
+
+    // GetTodos
     const getTodosDataSource = todoApi.addLambdaDataSource(
       "getTodosDataSource",
       getTodosLambda
@@ -64,7 +88,18 @@ export class TodoInfraServerStack extends cdk.Stack {
       fieldName: "getTodos",
     });
 
-    // CfnOutput
+    // Add Todo
+    const addTodoDataSource = todoApi.addLambdaDataSource(
+      "addTodoDataSource",
+      addTodoLambda
+    );
+
+    addTodoDataSource.createResolver({
+      typeName: "Mutation",
+      fieldName: "addTodo",
+    });
+
+    // == CfnOutput ==
     new cdk.CfnOutput(this, "GraphQlApiUrl", {
       value: todoApi.graphqlUrl,
     });
