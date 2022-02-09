@@ -7,6 +7,8 @@ import {
   ApolloProvider,
   HttpLink,
 } from "@apollo/client";
+import { useAuth0 } from "@auth0/auth0-react";
+import { Login } from "../Login";
 
 const client = new ApolloClient({
   link: new HttpLink({
@@ -19,12 +21,20 @@ const client = new ApolloClient({
 });
 
 export const Home = () => {
-  return (
-    <VStack>
-      <ApolloProvider client={client}>
-        <Header />
-        <TodoScreen />
-      </ApolloProvider>
-    </VStack>
-  );
+  const { isLoading, isAuthenticated } = useAuth0();
+
+  if (isLoading) return null;
+
+  if (!isAuthenticated) {
+    return <Login />;
+  } else {
+    return (
+      <VStack>
+        <ApolloProvider client={client}>
+          <Header />
+          <TodoScreen />
+        </ApolloProvider>
+      </VStack>
+    );
+  }
 };

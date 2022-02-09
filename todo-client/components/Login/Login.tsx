@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   Modal,
   ModalBody,
@@ -12,7 +13,10 @@ import {
 } from "@chakra-ui/react";
 
 export const Login = () => {
+  const { isLoading, loginWithRedirect } = useAuth0();
   const { onClose } = useDisclosure();
+
+  if (isLoading) return null;
 
   return (
     <Stack>
@@ -26,7 +30,7 @@ export const Login = () => {
             </Text>
           </ModalBody>
           <ModalFooter>
-            <Button>Login</Button>
+            <Button onClick={() => loginWithRedirect()}>Login</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
