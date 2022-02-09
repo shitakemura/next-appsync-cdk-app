@@ -8,7 +8,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     <Auth0Provider
       domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN ?? ""}
       clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID ?? ""}
-      redirectUri={process.env.NEXT_PUBLIC_AUTH0_REDIERCT_URL ?? ""}>
+      redirectUri={process.env.NEXT_PUBLIC_AUTH0_REDIERCT_URL ?? ""}
+      audience={process.env.NEXT_PUBLIC_AUTH0_AUTHORIZER_IDENTIFIER}
+      scope={process.env.NEXT_PUBLIC_AUTH0_SCOPE}>
       <ChakraProvider>
         <Component {...pageProps} />
       </ChakraProvider>

@@ -32,7 +32,7 @@ export class TodoInfraServerStack extends cdk.Stack {
         defaultAuthorization: {
           authorizationType: appsync.AuthorizationType.OIDC,
           openIdConnectConfig: {
-            oidcProvider: process.env.AUTH0_DOMAIN_URL || "",
+            oidcProvider: process.env.AUTH0_DOMAIN || "",
           },
         },
       },

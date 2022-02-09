@@ -1,4 +1,4 @@
-import { VStack } from "@chakra-ui/react";
+import { Spinner, Stack, VStack } from "@chakra-ui/react";
 import { Header } from "../Header";
 import { TodoScreen } from "../Todo";
 import {
@@ -7,27 +7,40 @@ import {
   ApolloProvider,
   HttpLink,
 } from "@apollo/client";
-import { useAuth0 } from "@auth0/auth0-react";
 import { Login } from "../Login";
+import { useAccessToken } from "../../hooks/useAccessToken";
 
-const client = new ApolloClient({
-  link: new HttpLink({
-    uri: process.env.NEXT_PUBLIC_APPSYNC_API_URL,
-    headers: {
-      "X-Api-Key": process.env.NEXT_PUBLIC_APPSYNC_API_KEY,
-    },
-  }),
-  cache: new InMemoryCache(),
-});
+const createApolloClient = (accessToken: string) => {
+  return new ApolloClient({
+    link: new HttpLink({
+      uri: process.env.NEXT_PUBLIC_APPSYNC_API_URL,
+      headers: {
+        Authorization: accessToken,
+      },
+    }) as any,
+    cache: new InMemoryCache(),
+  });
+};
 
 export const Home = () => {
-  const { isLoading, isAuthenticated } = useAuth0();
+  const { accessToken, isLoading } = useAccessToken();
 
-  if (isLoading) return null;
+  if (isLoading)
+    return (
+      <Stack w='full' h='100vh' justifyContent='center' alignItems='center'>
+        <Spinner
+          thickness='4px'
+          emptyColor='gray.200'
+          color='blue.500'
+          size='xl'
+        />
+      </Stack>
+    );
 
-  if (!isAuthenticated) {
+  if (!accessToken) {
     return <Login />;
   } else {
+    const client = createApolloClient(accessToken);
     return (
       <VStack>
         <ApolloProvider client={client}>
