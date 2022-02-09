@@ -75,6 +75,18 @@ export class TodoInfraServerStack extends cdk.Stack {
 
     todoTable.grantReadWriteData(addTodoLambda);
 
+    // ToggleTodo
+    const toggleTodoLambda = new lambdaNodeJs.NodejsFunction(
+      this,
+      "toggleTodoHandler",
+      {
+        entry: "lambda/toggleTodo.ts",
+        ...commonLambdaNodeJsProps,
+      }
+    );
+
+    todoTable.grantReadWriteData(toggleTodoLambda);
+
     // == AppSync DataSource ==
 
     // GetTodos
@@ -88,7 +100,7 @@ export class TodoInfraServerStack extends cdk.Stack {
       fieldName: "getTodos",
     });
 
-    // Add Todo
+    // AddTodo
     const addTodoDataSource = todoApi.addLambdaDataSource(
       "addTodoDataSource",
       addTodoLambda
@@ -97,6 +109,17 @@ export class TodoInfraServerStack extends cdk.Stack {
     addTodoDataSource.createResolver({
       typeName: "Mutation",
       fieldName: "addTodo",
+    });
+
+    // ToggleTodo
+    const toggleTodoDataSource = todoApi.addLambdaDataSource(
+      "toggleTodoDataSource",
+      toggleTodoLambda
+    );
+
+    toggleTodoDataSource.createResolver({
+      typeName: "Mutation",
+      fieldName: "toggleTodo",
     });
 
     // == CfnOutput ==
