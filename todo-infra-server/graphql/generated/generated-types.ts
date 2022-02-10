@@ -20,12 +20,18 @@ export type AddTodoInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   addTodo?: Maybe<Todo>;
+  deleteTodo?: Maybe<Scalars['Boolean']>;
   toggleTodo?: Maybe<Todo>;
 };
 
 
 export type MutationAddTodoArgs = {
   addTodoInput: AddTodoInput;
+};
+
+
+export type MutationDeleteTodoArgs = {
+  id: Scalars['ID'];
 };
 
 

@@ -87,6 +87,18 @@ export class TodoInfraServerStack extends cdk.Stack {
 
     todoTable.grantReadWriteData(toggleTodoLambda);
 
+    // DeleteTodo
+    const deleteTodoLambda = new lambdaNodeJs.NodejsFunction(
+      this,
+      "deleteTodoHandler",
+      {
+        entry: "lambda/deleteTodo.ts",
+        ...commonLambdaNodeJsProps,
+      }
+    );
+
+    todoTable.grantReadWriteData(deleteTodoLambda);
+
     // == AppSync DataSource ==
 
     // GetTodos
@@ -122,13 +134,20 @@ export class TodoInfraServerStack extends cdk.Stack {
       fieldName: "toggleTodo",
     });
 
+    // DeleteTodo
+    const deleteTodoDataSource = todoApi.addLambdaDataSource(
+      "deleteTodoDataSource",
+      deleteTodoLambda
+    );
+
+    deleteTodoDataSource.createResolver({
+      typeName: "Mutation",
+      fieldName: "deleteTodo",
+    });
+
     // == CfnOutput ==
     new cdk.CfnOutput(this, "GraphQlApiUrl", {
       value: todoApi.graphqlUrl,
-    });
-
-    new cdk.CfnOutput(this, "GraphQlApiKey", {
-      value: todoApi.apiKey || "",
     });
   }
 }
