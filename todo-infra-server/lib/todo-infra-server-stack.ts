@@ -4,6 +4,7 @@ import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as appsync from "@aws-cdk/aws-appsync-alpha";
 import { Construct } from "constructs";
 import * as dotenv from "dotenv";
+import * as path from "path";
 
 dotenv.config();
 export class TodoInfraServerStack extends cdk.Stack {
@@ -56,7 +57,7 @@ export class TodoInfraServerStack extends cdk.Stack {
       this,
       "getTodosHandler",
       {
-        entry: "lambda/getTodos.ts",
+        entry: path.join(__dirname, "../lambda/getTodos.ts"),
         ...commonLambdaNodeJsProps,
       }
     );
@@ -68,7 +69,7 @@ export class TodoInfraServerStack extends cdk.Stack {
       this,
       "addTodoHandler",
       {
-        entry: "lambda/addTodo.ts",
+        entry: path.join(__dirname, "../lambda/addTodo.ts"),
         ...commonLambdaNodeJsProps,
       }
     );
@@ -80,7 +81,7 @@ export class TodoInfraServerStack extends cdk.Stack {
       this,
       "toggleTodoHandler",
       {
-        entry: "lambda/toggleTodo.ts",
+        entry: path.join(__dirname, "../lambda/toggleTodo.ts"),
         ...commonLambdaNodeJsProps,
       }
     );
@@ -92,7 +93,7 @@ export class TodoInfraServerStack extends cdk.Stack {
       this,
       "deleteTodoHandler",
       {
-        entry: "lambda/deleteTodo.ts",
+        entry: path.join(__dirname, "../lambda/deleteTodo.ts"),
         ...commonLambdaNodeJsProps,
       }
     );
