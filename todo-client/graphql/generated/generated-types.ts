@@ -23,11 +23,17 @@ export type AddTodoInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   addTodo?: Maybe<Todo>;
+  toggleTodo?: Maybe<Todo>;
 };
 
 
 export type MutationAddTodoArgs = {
   addTodoInput: AddTodoInput;
+};
+
+
+export type MutationToggleTodoArgs = {
+  toggleTodoInput: ToggleTodoInput;
 };
 
 export type Query = {
@@ -44,6 +50,11 @@ export type Todo = {
   userId: Scalars['String'];
 };
 
+export type ToggleTodoInput = {
+  completed: Scalars['Boolean'];
+  id: Scalars['ID'];
+};
+
 export type AddTodoMutationVariables = Exact<{
   addTodoInput: AddTodoInput;
 }>;
@@ -55,6 +66,13 @@ export type GetTodosQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetTodosQuery = { __typename?: 'Query', getTodos: Array<{ __typename?: 'Todo', id: string, userId: string, title: string, completed: boolean, createdAt: any }> };
+
+export type ToggleTodoMutationVariables = Exact<{
+  toggleTodoInput: ToggleTodoInput;
+}>;
+
+
+export type ToggleTodoMutation = { __typename?: 'Mutation', toggleTodo?: { __typename?: 'Todo', id: string, userId: string, title: string, completed: boolean, createdAt: any } | null };
 
 
 export const AddTodoDocument = gql`
@@ -132,11 +150,49 @@ export function useGetTodosLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetTodosQueryHookResult = ReturnType<typeof useGetTodosQuery>;
 export type GetTodosLazyQueryHookResult = ReturnType<typeof useGetTodosLazyQuery>;
 export type GetTodosQueryResult = Apollo.QueryResult<GetTodosQuery, GetTodosQueryVariables>;
+export const ToggleTodoDocument = gql`
+    mutation ToggleTodo($toggleTodoInput: ToggleTodoInput!) {
+  toggleTodo(toggleTodoInput: $toggleTodoInput) {
+    id
+    userId
+    title
+    completed
+    createdAt
+  }
+}
+    `;
+export type ToggleTodoMutationFn = Apollo.MutationFunction<ToggleTodoMutation, ToggleTodoMutationVariables>;
+
+/**
+ * __useToggleTodoMutation__
+ *
+ * To run a mutation, you first call `useToggleTodoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleTodoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleTodoMutation, { data, loading, error }] = useToggleTodoMutation({
+ *   variables: {
+ *      toggleTodoInput: // value for 'toggleTodoInput'
+ *   },
+ * });
+ */
+export function useToggleTodoMutation(baseOptions?: Apollo.MutationHookOptions<ToggleTodoMutation, ToggleTodoMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ToggleTodoMutation, ToggleTodoMutationVariables>(ToggleTodoDocument, options);
+      }
+export type ToggleTodoMutationHookResult = ReturnType<typeof useToggleTodoMutation>;
+export type ToggleTodoMutationResult = Apollo.MutationResult<ToggleTodoMutation>;
+export type ToggleTodoMutationOptions = Apollo.BaseMutationOptions<ToggleTodoMutation, ToggleTodoMutationVariables>;
 export const namedOperations = {
   Query: {
     GetTodos: 'GetTodos'
   },
   Mutation: {
-    AddTodo: 'AddTodo'
+    AddTodo: 'AddTodo',
+    ToggleTodo: 'ToggleTodo'
   }
 }
