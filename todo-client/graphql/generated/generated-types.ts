@@ -23,12 +23,18 @@ export type AddTodoInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   addTodo?: Maybe<Todo>;
+  deleteTodo?: Maybe<Scalars['Boolean']>;
   toggleTodo?: Maybe<Todo>;
 };
 
 
 export type MutationAddTodoArgs = {
   addTodoInput: AddTodoInput;
+};
+
+
+export type MutationDeleteTodoArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -66,6 +72,13 @@ export type GetTodosQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetTodosQuery = { __typename?: 'Query', getTodos: Array<{ __typename?: 'Todo', id: string, userId: string, title: string, completed: boolean, createdAt: any }> };
+
+export type DeleteTodoMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteTodoMutation = { __typename?: 'Mutation', deleteTodo?: boolean | null };
 
 export type ToggleTodoMutationVariables = Exact<{
   toggleTodoInput: ToggleTodoInput;
@@ -150,6 +163,37 @@ export function useGetTodosLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetTodosQueryHookResult = ReturnType<typeof useGetTodosQuery>;
 export type GetTodosLazyQueryHookResult = ReturnType<typeof useGetTodosLazyQuery>;
 export type GetTodosQueryResult = Apollo.QueryResult<GetTodosQuery, GetTodosQueryVariables>;
+export const DeleteTodoDocument = gql`
+    mutation DeleteTodo($id: ID!) {
+  deleteTodo(id: $id)
+}
+    `;
+export type DeleteTodoMutationFn = Apollo.MutationFunction<DeleteTodoMutation, DeleteTodoMutationVariables>;
+
+/**
+ * __useDeleteTodoMutation__
+ *
+ * To run a mutation, you first call `useDeleteTodoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTodoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTodoMutation, { data, loading, error }] = useDeleteTodoMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTodoMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTodoMutation, DeleteTodoMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTodoMutation, DeleteTodoMutationVariables>(DeleteTodoDocument, options);
+      }
+export type DeleteTodoMutationHookResult = ReturnType<typeof useDeleteTodoMutation>;
+export type DeleteTodoMutationResult = Apollo.MutationResult<DeleteTodoMutation>;
+export type DeleteTodoMutationOptions = Apollo.BaseMutationOptions<DeleteTodoMutation, DeleteTodoMutationVariables>;
 export const ToggleTodoDocument = gql`
     mutation ToggleTodo($toggleTodoInput: ToggleTodoInput!) {
   toggleTodo(toggleTodoInput: $toggleTodoInput) {
@@ -193,6 +237,7 @@ export const namedOperations = {
   },
   Mutation: {
     AddTodo: 'AddTodo',
+    DeleteTodo: 'DeleteTodo',
     ToggleTodo: 'ToggleTodo'
   }
 }
